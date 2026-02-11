@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +34,26 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
+        }
+
+        .lang-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .lang-toggle:hover {
+            background: white;
+            color: #2c3e50;
         }
 
         .logo {
@@ -470,18 +491,19 @@
 <body>
     <div class="dashboard-container">
         <div class="header">
+            <button class="lang-toggle" onclick="toggleLanguage()" id="langToggle">🌐 ES</button>
             <div class="logo">Quality Glass Industries</div>
-            <div class="subtitle">Customer Portal v0.4</div>
+            <div class="subtitle" data-i18n="subtitle">Customer Portal v0.4</div>
         </div>
 
         <div class="search-section">
             <div class="search-container">
-                <h2 class="search-title">Track Your Order</h2>
+                <h2 class="search-title" data-i18n="trackOrder">Track Your Order</h2>
                 <div class="search-box">
-                    <input type="text" class="search-input" id="orderIdInput" placeholder="Enter your Order ID (e.g., QGABCD1234)">
-                    <button class="search-btn" onclick="searchOrder()">Search</button>
+                    <input type="text" class="search-input" id="orderIdInput" data-i18n-placeholder="orderIdPlaceholder" placeholder="Enter your Order ID (e.g., QGABCD1234)">
+                    <button class="search-btn" onclick="searchOrder()" data-i18n="search">Search</button>
                 </div>
-                <p class="search-note">📸 Your Order ID was shown as a QR code when you placed your order</p>
+                <p class="search-note" data-i18n="searchNote">📸 Your Order ID was shown as a QR code when you placed your order</p>
             </div>
         </div>
 
@@ -493,8 +515,8 @@
 
         <div class="no-order" id="noOrder" style="display: none;">
             <div class="no-order-icon">📦</div>
-            <h3>No Order Found</h3>
-            <p>Please check your Order ID and try again</p>
+            <h3 data-i18n="noOrderFound">No Order Found</h3>
+            <p data-i18n="checkOrderId">Please check your Order ID and try again</p>
         </div>
     </div>
 
@@ -502,32 +524,33 @@
     <div class="modal" id="pinModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Request Order Change</h2>
-                <p class="modal-description">A secure PIN has been generated for your order change request.</p>
+                <h2 class="modal-title" data-i18n="requestChange">Request Order Change</h2>
+                <p class="modal-description" data-i18n="pinGenerated">A secure PIN has been generated for your order change request.</p>
             </div>
 
             <div class="pin-display">
-                <div class="pin-label">Your Change PIN</div>
+                <div class="pin-label" data-i18n="yourPin">Your Change PIN</div>
                 <div class="pin-code" id="generatedPin">------</div>
             </div>
 
             <div class="pin-instructions">
-                <h4>📋 Next Steps:</h4>
-                <ol>
-                    <li><strong>Write down or screenshot this PIN</strong> - you'll need it</li>
-                    <li>Contact our sales team (in person, phone, or email)</li>
-                    <li>Provide them with your Order ID and this PIN</li>
-                    <li>Tell them what changes you need</li>
-                    <li>Sales team will verify your PIN and update the order</li>
+                <h4 data-i18n="nextSteps">📋 Next Steps:</h4>
+                <ol id="pinStepsList">
+                    <li data-i18n="step1"><strong>Write down or screenshot this PIN</strong> - you'll need it</li>
+                    <li data-i18n="step2">Contact our sales team (in person, phone, or email)</li>
+                    <li data-i18n="step3">Provide them with your Order ID and this PIN</li>
+                    <li data-i18n="step4">Tell them what changes you need</li>
+                    <li data-i18n="step5">Sales team will verify your PIN and update the order</li>
                 </ol>
             </div>
 
             <div class="warning-box">
-                <strong>⚠️ Important:</strong> The sales team CANNOT change your order without this PIN. Keep it secure!
+                <strong data-i18n="warning">⚠️ Important:</strong>
+                <span data-i18n="warningText"> The sales team CANNOT change your order without this PIN. Keep it secure!</span>
             </div>
 
             <div class="modal-actions">
-                <button class="modal-btn btn-primary" onclick="closePinModal()">Got It</button>
+                <button class="modal-btn btn-primary" onclick="closePinModal()" data-i18n="gotIt">Got It</button>
             </div>
         </div>
     </div>
@@ -541,13 +564,152 @@
             }
         };
 
+        const translations = {
+            en: {
+                subtitle: "Customer Portal v0.4",
+                trackOrder: "Track Your Order",
+                orderIdPlaceholder: "Enter your Order ID (e.g., QGABCD1234)",
+                search: "Search",
+                searchNote: "📸 Your Order ID was shown as a QR code when you placed your order",
+                noOrderFound: "No Order Found",
+                checkOrderId: "Please check your Order ID and try again",
+                requestChange: "Request Order Change",
+                pinGenerated: "A secure PIN has been generated for your order change request.",
+                yourPin: "Your Change PIN",
+                nextSteps: "📋 Next Steps:",
+                step1: "Write down or screenshot this PIN - you'll need it",
+                step2: "Contact our sales team (in person, phone, or email)",
+                step3: "Provide them with your Order ID and this PIN",
+                step4: "Tell them what changes you need",
+                step5: "Sales team will verify your PIN and update the order",
+                warning: "⚠️ Important:",
+                warningText: " The sales team CANNOT change your order without this PIN. Keep it secure!",
+                gotIt: "Got It",
+                order: "Order",
+                orderDate: "Order Date",
+                customer: "Customer",
+                paymentMethod: "Payment Method",
+                dimensions: "Dimensions",
+                width: "Width",
+                height: "Height",
+                specifications: "Specifications",
+                color: "Color",
+                thickness: "Thickness",
+                additionalServices: "Additional Services",
+                none: "None",
+                requestChangeBtn: "🔄 Request Order Change",
+                refreshStatus: "🔃 Refresh Status",
+                shareOrder: "🔗 Share Order Link",
+                placeNewOrder: "➕ Place New Order",
+                pending: "Pending",
+                inProgress: "In Progress",
+                ready: "Ready",
+                completed: "Completed",
+                cancelled: "Cancelled",
+                clear: "Clear",
+                bronze: "Bronze",
+                gray: "Gray",
+                blue: "Blue",
+                green: "Green",
+                antique: "Antique (Stained)",
+                mirrorClear: "Mirror - Clear",
+                mirrorDark: "Mirror - Dark",
+                cash: "Cash",
+                creditDebit: "Credit/Debit Card",
+                digitalPayment: "Apple Pay / Google Pay / ATH Móvil"
+            },
+            es: {
+                subtitle: "Portal del Cliente v0.4",
+                trackOrder: "Rastrear tu Orden",
+                orderIdPlaceholder: "Ingresa tu ID de Orden (ej., QGABCD1234)",
+                search: "Buscar",
+                searchNote: "📸 Tu ID de Orden fue mostrado como código QR cuando hiciste tu pedido",
+                noOrderFound: "Orden No Encontrada",
+                checkOrderId: "Por favor verifica tu ID de Orden e intenta de nuevo",
+                requestChange: "Solicitar Cambio de Orden",
+                pinGenerated: "Se ha generado un PIN seguro para tu solicitud de cambio de orden.",
+                yourPin: "Tu PIN de Cambio",
+                nextSteps: "📋 Próximos Pasos:",
+                step1: "Anota o toma captura de este PIN - lo necesitarás",
+                step2: "Contacta a nuestro equipo de ventas (en persona, teléfono, o correo)",
+                step3: "Proporciona tu ID de Orden y este PIN",
+                step4: "Diles qué cambios necesitas",
+                step5: "El equipo de ventas verificará tu PIN y actualizará la orden",
+                warning: "⚠️ Importante:",
+                warningText: " El equipo de ventas NO PUEDE cambiar tu orden sin este PIN. ¡Manténlo seguro!",
+                gotIt: "Entendido",
+                order: "Orden",
+                orderDate: "Fecha de Orden",
+                customer: "Cliente",
+                paymentMethod: "Método de Pago",
+                dimensions: "Dimensiones",
+                width: "Ancho",
+                height: "Alto",
+                specifications: "Especificaciones",
+                color: "Color",
+                thickness: "Grosor",
+                additionalServices: "Servicios Adicionales",
+                none: "Ninguno",
+                requestChangeBtn: "🔄 Solicitar Cambio",
+                refreshStatus: "🔃 Actualizar Estado",
+                shareOrder: "🔗 Compartir Enlace",
+                placeNewOrder: "➕ Nueva Orden",
+                pending: "Pendiente",
+                inProgress: "En Progreso",
+                ready: "Listo",
+                completed: "Completado",
+                cancelled: "Cancelado",
+                clear: "Claro",
+                bronze: "Bronce",
+                gray: "Gris",
+                blue: "Azul",
+                green: "Verde",
+                antique: "Antiguo (Manchado)",
+                mirrorClear: "Espejo - Claro",
+                mirrorDark: "Espejo - Oscuro",
+                cash: "Efectivo",
+                creditDebit: "Tarjeta de Crédito/Débito",
+                digitalPayment: "Apple Pay / Google Pay / ATH Móvil"
+            }
+        };
+
+        let currentLang = localStorage.getItem('qgi-lang') || 'en';
         let currentOrder = null;
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'es' : 'en';
+            localStorage.setItem('qgi-lang', currentLang);
+            updateLanguage();
+            if (currentOrder) {
+                displayOrder(currentOrder);
+            }
+        }
+
+        function updateLanguage() {
+            const lang = translations[currentLang];
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (lang[key]) {
+                    el.textContent = lang[key];
+                }
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (lang[key]) {
+                    el.placeholder = lang[key];
+                }
+            });
+            
+            document.getElementById('langToggle').textContent = currentLang === 'en' ? '🌐 ES' : '🌐 EN';
+        }
 
         async function searchOrder() {
             const orderId = document.getElementById('orderIdInput').value.trim().toUpperCase();
             
             if (!orderId) {
-                alert('Please enter an Order ID');
+                alert(currentLang === 'en' ? 'Please enter an Order ID' : 'Por favor ingresa un ID de Orden');
                 return;
             }
 
@@ -580,75 +742,84 @@
 
             } catch (error) {
                 console.error('Error fetching order:', error);
-                alert('Failed to fetch order. Please check your connection and try again.');
+                alert(currentLang === 'en' ? 'Failed to fetch order. Please check your connection and try again.' : 'Error al obtener orden. Por favor verifica tu conexión e intenta de nuevo.');
             }
         }
 
         function displayOrder(order) {
+            const lang = translations[currentLang];
             const statusClass = `status-${order.status}`;
             const orderDate = new Date(order.timestamp).toLocaleString();
+            
+            const statusText = {
+                'pending': lang.pending,
+                'in-progress': lang.inProgress,
+                'ready': lang.ready,
+                'completed': lang.completed,
+                'cancelled': lang.cancelled
+            }[order.status] || order.status;
             
             const additionsHTML = order.specifications.additions.length > 0
                 ? order.specifications.additions.map(add => 
                     `<span class="addition-badge">${formatAddition(add)}</span>`
                   ).join('')
-                : '<span class="spec-value">None</span>';
+                : `<span class="spec-value">${lang.none}</span>`;
 
             const customerInfo = order.customerName || order.customerId 
                 ? `
                     <div class="meta-item">
-                        <span class="meta-label">Customer</span>
-                        <span class="meta-value">${order.customerName || order.customerId || 'Not assigned'}</span>
+                        <span class="meta-label">${lang.customer}</span>
+                        <span class="meta-value">${order.customerName || order.customerId || (currentLang === 'en' ? 'Not assigned' : 'No asignado')}</span>
                     </div>
                 `
                 : '';
 
             const html = `
                 <div class="order-header">
-                    <div class="order-id">Order ${order.orderId}</div>
-                    <div class="status-badge ${statusClass}">${order.status.replace('-', ' ')}</div>
+                    <div class="order-id">${lang.order} ${order.orderId}</div>
+                    <div class="status-badge ${statusClass}">${statusText}</div>
                 </div>
 
                 <div class="order-meta">
                     <div class="meta-item">
-                        <span class="meta-label">Order Date</span>
+                        <span class="meta-label">${lang.orderDate}</span>
                         <span class="meta-value">${orderDate}</span>
                     </div>
                     ${customerInfo}
                     <div class="meta-item">
-                        <span class="meta-label">Payment Method</span>
+                        <span class="meta-label">${lang.paymentMethod}</span>
                         <span class="meta-value">${formatPaymentMethod(order.payment.method)}</span>
                     </div>
                 </div>
 
                 <div class="order-content">
                     <div class="order-section">
-                        <div class="section-title">Dimensions</div>
+                        <div class="section-title">${lang.dimensions}</div>
                         <div class="spec-item">
-                            <span class="spec-label">Width</span>
+                            <span class="spec-label">${lang.width}</span>
                             <span class="spec-value">${order.dimensions.width}"</span>
                         </div>
                         <div class="spec-item">
-                            <span class="spec-label">Height</span>
+                            <span class="spec-label">${lang.height}</span>
                             <span class="spec-value">${order.dimensions.height}"</span>
                         </div>
                     </div>
 
                     <div class="order-section">
-                        <div class="section-title">Specifications</div>
+                        <div class="section-title">${lang.specifications}</div>
                         <div class="spec-item">
-                            <span class="spec-label">Color</span>
+                            <span class="spec-label">${lang.color}</span>
                             <span class="spec-value">${formatColor(order.specifications.color)}</span>
                         </div>
                         <div class="spec-item">
-                            <span class="spec-label">Thickness</span>
+                            <span class="spec-label">${lang.thickness}</span>
                             <span class="spec-value">${order.specifications.thickness}</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="order-section">
-                    <div class="section-title">Additional Services</div>
+                    <div class="section-title">${lang.additionalServices}</div>
                     <div class="additions-list">
                         ${additionsHTML}
                     </div>
@@ -656,16 +827,16 @@
 
                 <div class="order-actions">
                     <button class="action-btn btn-change" onclick="requestChange()">
-                        🔄 Request Order Change
+                        ${lang.requestChangeBtn}
                     </button>
                     <button class="action-btn btn-refresh" onclick="refreshOrder()">
-                        🔃 Refresh Status
+                        ${lang.refreshStatus}
                     </button>
                     <button class="action-btn btn-new" onclick="shareOrder()">
-                        🔗 Share Order Link
+                        ${lang.shareOrder}
                     </button>
                     <button class="action-btn btn-new" onclick="newOrder()">
-                        ➕ Place New Order
+                        ${lang.placeNewOrder}
                     </button>
                 </div>
             `;
@@ -699,7 +870,7 @@
 
             } catch (error) {
                 console.error('Error generating PIN:', error);
-                alert('Failed to generate change PIN. Please try again or contact staff.');
+                alert(currentLang === 'en' ? 'Failed to generate change PIN. Please try again or contact staff.' : 'Error al generar PIN de cambio. Por favor intenta de nuevo o contacta al personal.');
             }
         }
 
@@ -724,78 +895,106 @@
             
             const orderUrl = `${window.location.origin}${window.location.pathname}?order=${currentOrder.orderId}`;
             
-            // try native share api first (works on mobile)
             if (navigator.share) {
                 navigator.share({
-                    title: `Order ${currentOrder.orderId}`,
-                    text: `Track my glass order at Quality Glass Industries`,
+                    title: `${translations[currentLang].order} ${currentOrder.orderId}`,
+                    text: currentLang === 'en' ? `Track my glass order at Quality Glass Industries` : `Rastrear mi orden de vidrio en Quality Glass Industries`,
                     url: orderUrl
                 }).catch(() => {
-                    // if share fails, fall back to clipboard
                     copyToClipboard(orderUrl);
                 });
             } else {
-                // desktop fallback - copy to clipboard
                 copyToClipboard(orderUrl);
             }
         }
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('Order link copied to clipboard!\n\n' + text);
+                alert((currentLang === 'en' ? 'Order link copied to clipboard!\n\n' : '¡Enlace de orden copiado al portapapeles!\n\n') + text);
             }).catch(() => {
-                // ultimate fallback - show the URL
-                prompt('Copy this link:', text);
+                prompt(currentLang === 'en' ? 'Copy this link:' : 'Copia este enlace:', text);
             });
         }
 
         function formatColor(color) {
             const colorMap = {
-                'clear': 'Clear',
-                'bronze': 'Bronze',
-                'gray': 'Gray',
-                'blue': 'Blue',
-                'green': 'Green',
-                'antique': 'Antique (Stained)',
-                'mirror-clear': 'Mirror - Clear',
-                'mirror-dark': 'Mirror - Dark'
+                'en': {
+                    'clear': 'Clear',
+                    'bronze': 'Bronze',
+                    'gray': 'Gray',
+                    'blue': 'Blue',
+                    'green': 'Green',
+                    'antique': 'Antique (Stained)',
+                    'mirror-clear': 'Mirror - Clear',
+                    'mirror-dark': 'Mirror - Dark'
+                },
+                'es': {
+                    'clear': 'Claro',
+                    'bronze': 'Bronce',
+                    'gray': 'Gris',
+                    'blue': 'Azul',
+                    'green': 'Verde',
+                    'antique': 'Antiguo (Manchado)',
+                    'mirror-clear': 'Espejo - Claro',
+                    'mirror-dark': 'Espejo - Oscuro'
+                }
             };
-            return colorMap[color] || color;
+            return colorMap[currentLang][color] || color;
         }
 
         function formatAddition(addition) {
             const additionMap = {
-                'diamon-fusion': 'Diamon-Fusion®',
-                'diamond-fusion': 'Diamon-Fusion®',
-                'tempering': 'Tempering',
-                'sandblasting': 'Sandblasting',
-                'beveling': 'Beveling ⚠️',
-                'edge-rounding': 'Edge Rounding ⚠️'
+                'en': {
+                    'diamon-fusion': 'Diamon-Fusion®',
+                    'diamond-fusion': 'Diamon-Fusion®',
+                    'tempering': 'Tempering',
+                    'sandblasting': 'Sandblasting',
+                    'beveling': 'Beveling ⚠️',
+                    'edge-rounding': 'Edge Rounding ⚠️'
+                },
+                'es': {
+                    'diamon-fusion': 'Diamon-Fusion®',
+                    'diamond-fusion': 'Diamon-Fusion®',
+                    'tempering': 'Templado',
+                    'sandblasting': 'Arenado',
+                    'beveling': 'Biselado ⚠️',
+                    'edge-rounding': 'Redondeo de Bordes ⚠️'
+                }
             };
-            return additionMap[addition] || addition;
+            return additionMap[currentLang][addition] || addition;
         }
 
         function formatPaymentMethod(method) {
             const methodMap = {
-                'credit-debit': 'Credit/Debit Card',
-                'card': 'Credit/Debit Card',
-                'cash': 'Cash',
-                'apple-google-ath': 'Apple Pay / Google Pay / ATH Móvil',
-                'digital': 'Digital Wallet',
-                'ath-movil': 'ATH Móvil'
+                'en': {
+                    'credit-debit': 'Credit/Debit Card',
+                    'card': 'Credit/Debit Card',
+                    'cash': 'Cash',
+                    'apple-google-ath': 'Apple Pay / Google Pay / ATH Móvil',
+                    'digital': 'Digital Wallet',
+                    'ath-movil': 'ATH Móvil'
+                },
+                'es': {
+                    'credit-debit': 'Tarjeta de Crédito/Débito',
+                    'card': 'Tarjeta',
+                    'cash': 'Efectivo',
+                    'apple-google-ath': 'Apple Pay / Google Pay / ATH Móvil',
+                    'digital': 'Cartera Digital',
+                    'ath-movil': 'ATH Móvil'
+                }
             };
-            return methodMap[method] || method;
+            return methodMap[currentLang][method] || method;
         }
 
-        // Allow Enter key to search
         document.getElementById('orderIdInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchOrder();
             }
         });
 
-        // auto-load order from URL parameter
         window.addEventListener('DOMContentLoaded', function() {
+            updateLanguage();
+            
             const urlParams = new URLSearchParams(window.location.search);
             const orderId = urlParams.get('order');
             
