@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QGI Customer Portal, v0.5r2</title>
+    <title>QGI Customer Portal v0.5r2</title>
     <style>
         * {
             margin: 0;
@@ -661,6 +661,9 @@
                     <button class="action-btn btn-refresh" onclick="refreshOrder()">
                         🔃 Refresh Status
                     </button>
+                    <button class="action-btn btn-new" onclick="shareOrder()">
+                        🔗 Share Order Link
+                    </button>
                     <button class="action-btn btn-new" onclick="newOrder()">
                         ➕ Place New Order
                     </button>
@@ -716,6 +719,36 @@
             window.location.href = 'QGI-KIOSK-v0_4.html';
         }
 
+        function shareOrder() {
+            if (!currentOrder) return;
+            
+            const orderUrl = `${window.location.origin}${window.location.pathname}?order=${currentOrder.orderId}`;
+            
+            // try native share api first (works on mobile)
+            if (navigator.share) {
+                navigator.share({
+                    title: `Order ${currentOrder.orderId}`,
+                    text: `Track my glass order at Quality Glass Industries`,
+                    url: orderUrl
+                }).catch(() => {
+                    // if share fails, fall back to clipboard
+                    copyToClipboard(orderUrl);
+                });
+            } else {
+                // desktop fallback - copy to clipboard
+                copyToClipboard(orderUrl);
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Order link copied to clipboard!\n\n' + text);
+            }).catch(() => {
+                // ultimate fallback - show the URL
+                prompt('Copy this link:', text);
+            });
+        }
+
         function formatColor(color) {
             const colorMap = {
                 'clear': 'Clear',
@@ -757,6 +790,17 @@
         // Allow Enter key to search
         document.getElementById('orderIdInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                searchOrder();
+            }
+        });
+
+        // auto-load order from URL parameter
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('order');
+            
+            if (orderId) {
+                document.getElementById('orderIdInput').value = orderId.toUpperCase();
                 searchOrder();
             }
         });
