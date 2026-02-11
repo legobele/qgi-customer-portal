@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QGI Customer Portal, v0.5r2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .search-section {
+            padding: 30px;
+            background: white;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-note {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .order-display {
+            padding: 30px;
+            display: none;
+        }
+
+        .order-display.active {
+            display: block;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .order-id {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .status-badge {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending { 
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e); 
+            color: #d63031; 
+        }
+        .status-in-progress { 
+            background: linear-gradient(135deg, #74b9ff, #0984e3); 
+            color: white; 
+        }
+        .status-ready { 
+            background: linear-gradient(135deg, #00b894, #00a085); 
+            color: white; 
+        }
+        .status-completed { 
+            background: linear-gradient(135deg, #6c757d, #495057); 
+            color: white; 
+        }
+        .status-cancelled { 
+            background: linear-gradient(135deg, #fd79a8, #e84393); 
+            color: white; 
+        }
+
+        .order-meta {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            color: #2c3e50;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .order-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .order-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .spec-item {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .spec-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .spec-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .additions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .addition-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .order-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .action-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-change {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: #000;
+        }
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-new {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .modal-description {
+            color: #6c757d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .pin-display {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .pin-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .pin-code {
+            font-size: 3rem;
+            font-weight: bold;
+            letter-spacing: 8px;
+            font-family: monospace;
+        }
+
+        .pin-instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .pin-instructions h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .pin-instructions ol {
+            margin-left: 20px;
+            color: #424242;
+        }
+
+        .pin-instructions li {
+            margin-bottom: 8px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .warning-box strong {
+            color: #856404;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e0e6ed;
+            color: #2c3e50;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .no-order {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .no-order-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .order-content {
+                grid-template-columns: 1fr;
+            }
+
+            .order-meta {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .pin-code {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="logo">Quality Glass Industries</div>
+            <div class="subtitle">Customer Portal v0.4</div>
+        </div>
+
+        <div class="search-section">
+            <div class="search-container">
+                <h2 class="search-title">Track Your Order</h2>
+                <div class="search-box">
+                    <input type="text" class="search-input" id="orderIdInput" placeholder="Enter your Order ID (e.g., QGABCD1234)">
+                    <button class="search-btn" onclick="searchOrder()">Search</button>
+                </div>
+                <p class="search-note">📸 Your Order ID was shown as a QR code when you placed your order</p>
+            </div>
+        </div>
+
+        <div class="order-display" id="orderDisplay">
+            <div class="order-card" id="orderCard">
+                <!-- Order details will be populated here -->
+            </div>
+        </div>
+
+        <div class="no-order" id="noOrder" style="display: none;">
+            <div class="no-order-icon">📦</div>
+            <h3>No Order Found</h3>
+            <p>Please check your Order ID and try again</p>
+        </div>
+    </div>
+
+    <!-- PIN Generation Modal -->
+    <div class="modal" id="pinModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Request Order Change</h2>
+                <p class="modal-description">A secure PIN has been generated for your order change request.</p>
+            </div>
+
+            <div class="pin-display">
+                <div class="pin-label">Your Change PIN</div>
+                <div class="pin-code" id="generatedPin">------</div>
+            </div>
+
+            <div class="pin-instructions">
+                <h4>📋 Next Steps:</h4>
+                <ol>
+                    <li><strong>Write down or screenshot this PIN</strong> - you'll need it</li>
+                    <li>Contact our sales team (in person, phone, or email)</li>
+                    <li>Provide them with your Order ID and this PIN</li>
+                    <li>Tell them what changes you need</li>
+                    <li>Sales team will verify your PIN and update the order</li>
+                </ol>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> The sales team CANNOT change your order without this PIN. Keep it secure!
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn btn-primary" onclick="closePinModal()">Got It</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_CONFIG = {
+            baseUrl: 'https://vague-nonspeculatively-florida.ngrok-free.dev',
+            endpoints: {
+                getOrder: '/api/orders/:id',
+                generatePin: '/api/orders/:id/generate-pin'
+            }
+        };
+
+        let currentOrder = null;
+
+        async function searchOrder() {
+            const orderId = document.getElementById('orderIdInput').value.trim().toUpperCase();
+            
+            if (!orderId) {
+                alert('Please enter an Order ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `${SERVER_CONFIG.baseUrl}${SERVER_CONFIG.endpoints.getOrder.replace(':id', orderId)}`,
+                    {
+                        headers: {
+                            'ngrok-skip-browser-warning': 'true'
+                        }
+                    }
+                );
+
+                if (response.status === 404) {
+                    document.getElementById('orderDisplay').classList.remove('active');
+                    document.getElementById('noOrder').style.display = 'block';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch order');
+                }
+
+                currentOrder = await response.json();
+                displayOrder(currentOrder);
+                
+                document.getElementById('noOrder').style.display = 'none';
+                document.getElementById('orderDisplay').classList.add('active');
+                document.getElementById('orderDisplay').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Error fetching order:', error);
+                alert('Failed to fetch order. Please check your connection and try again.');
+            }
+        }
+
+        function displayOrder(order) {
+            const statusClass = `status-${order.status}`;
+            const orderDate = new Date(order.timestamp).toLocaleString();
+            
+            const additionsHTML = order.specifications.additions.length > 0
+                ? order.specifications.additions.map(add => 
+                    `<span class="addition-badge">${formatAddition(add)}</span>`
+                  ).join('')
+                : '<span class="spec-value">None</span>';
+
+            const customerInfo = order.customerName || order.customerId 
+                ? `
+                    <div class="meta-item">
+                        <span class="meta-label">Customer</span>
+                        <span class="meta-value">${order.customerName || order.customerId || 'Not assigned'}</span>
+                    </div>
+                `
+                : '';
+
+            const html = `
+                <div class="order-header">
+                    <div class="order-id">Order ${order.orderId}</div>
+                    <div class="status-badge ${statusClass}">${order.status.replace('-', ' ')}</div>
+                </div>
+
+                <div class="order-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Order Date</span>
+                        <span class="meta-value">${orderDate}</span>
+                    </div>
+                    ${customerInfo}
+                    <div class="meta-item">
+                        <span class="meta-label">Payment Method</span>
+                        <span class="meta-value">${formatPaymentMethod(order.payment.method)}</span>
+                    </div>
+                </div>
+
+                <div class="order-content">
+                    <div class="order-section">
+                        <div class="section-title">Dimensions</div>
+                        <div class="spec-item">
+                            <span class="spec-label">Width</span>
+                            <span class="spec-value">${order.dimensions.width}"</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Height</span>
+                            <span class="spec-value">${order.dimensions.height}"</span>
+                        </div>
+                    </div>
+
+                    <div class="order-section">
+                        <div class="section-title">Specifications</div>
+                        <div class="spec-item">
+                            <span class="spec-label">Color</span>
+                            <span class="spec-value">${formatColor(order.specifications.color)}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Thickness</span>
+                            <span class="spec-value">${order.specifications.thickness}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-section">
+                    <div class="section-title">Additional Services</div>
+                    <div class="additions-list">
+                        ${additionsHTML}
+                    </div>
+                </div>
+
+                <div class="order-actions">
+                    <button class="action-btn btn-change" onclick="requestChange()">
+                        🔄 Request Order Change
+                    </button>
+                    <button class="action-btn btn-refresh" onclick="refreshOrder()">
+                        🔃 Refresh Status
+                    </button>
+                    <button class="action-btn btn-new" onclick="newOrder()">
+                        ➕ Place New Order
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('orderCard').innerHTML = html;
+        }
+
+        async function requestChange() {
+            if (!currentOrder) return;
+
+            try {
+                const response = await fetch(
+                    `${SERVER_CONFIG.baseUrl}${SERVER_CONFIG.endpoints.generatePin.replace(':id', currentOrder.orderId)}`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': 'true'
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate PIN');
+                }
+
+                const result = await response.json();
+                
+                document.getElementById('generatedPin').textContent = result.pin;
+                document.getElementById('pinModal').classList.add('active');
+
+            } catch (error) {
+                console.error('Error generating PIN:', error);
+                alert('Failed to generate change PIN. Please try again or contact staff.');
+            }
+        }
+
+        function closePinModal() {
+            document.getElementById('pinModal').classList.remove('active');
+        }
+
+        async function refreshOrder() {
+            if (!currentOrder) return;
+            
+            const orderId = currentOrder.orderId;
+            document.getElementById('orderIdInput').value = orderId;
+            await searchOrder();
+        }
+
+        function newOrder() {
+            window.location.href = 'QGI-KIOSK-v0_4.html';
+        }
+
+        function formatColor(color) {
+            const colorMap = {
+                'clear': 'Clear',
+                'bronze': 'Bronze',
+                'gray': 'Gray',
+                'blue': 'Blue',
+                'green': 'Green',
+                'antique': 'Antique (Stained)',
+                'mirror-clear': 'Mirror - Clear',
+                'mirror-dark': 'Mirror - Dark'
+            };
+            return colorMap[color] || color;
+        }
+
+        function formatAddition(addition) {
+            const additionMap = {
+                'diamon-fusion': 'Diamon-Fusion®',
+                'diamond-fusion': 'Diamon-Fusion®',
+                'tempering': 'Tempering',
+                'sandblasting': 'Sandblasting',
+                'beveling': 'Beveling ⚠️',
+                'edge-rounding': 'Edge Rounding ⚠️'
+            };
+            return additionMap[addition] || addition;
+        }
+
+        function formatPaymentMethod(method) {
+            const methodMap = {
+                'credit-debit': 'Credit/Debit Card',
+                'card': 'Credit/Debit Card',
+                'cash': 'Cash',
+                'apple-google-ath': 'Apple Pay / Google Pay / ATH Móvil',
+                'digital': 'Digital Wallet',
+                'ath-movil': 'ATH Móvil'
+            };
+            return methodMap[method] || method;
+        }
+
+        // Allow Enter key to search
+        document.getElementById('orderIdInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchOrder();
+            }
+        });
+    </script>
+</body>
+</html>
